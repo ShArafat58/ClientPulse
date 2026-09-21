@@ -69,3 +69,13 @@
 **Severity:** Medium
 **Workaround:** Switched base image to plain public.ecr.aws/docker/library/python:3.12-slim, keeping only the Web Adapter extension layer — this is the correct pattern per AWS docs for web-app-style Lambda containers
 **Suggested improvement:** AWS's Lambda Web Adapter examples should more clearly warn against combining it with the Lambda base runtime images
+
+## Entry 8
+
+**Date:** 2026-09-21
+**Task:** Create Lambda function (both zip-based and container-image-based) via CLI
+**Expected:** Function creates successfully with attached IAM role
+**Actual:** AccessDeniedException with null message on CreateFunction — confirmed via community research (AWS re:Post) to be a known, hard-to-diagnose account-level restriction unrelated to IAM/SCP permissions (IAM Policy Simulator shows "allowed" even when blocked)
+**Severity:** High (blocks Lambda deployment, likely same root cause as Bedrock restriction)
+**Workaround:** Added details to existing AWS Support case (ID: 179000934700535); proceeding with local development and code that doesn't require live Lambda while awaiting support response
+**Suggested improvement:** AWS should provide clearer, more specific error messages for account-level restrictions rather than a generic "None" message that looks identical to a permissions misconfiguration
