@@ -19,3 +19,13 @@
 **Severity:** Low
 **Workaround:** Fixed threshold logic (score == 0 → healthy, else tiered)
 **Suggested improvement:** N/A — internal logic bug, caught by test coverage
+
+## Entry 3
+
+**Date:** 2026-09-21
+**Task:** Create DynamoDB table in AWS (real account, not local)
+**Expected:** Table creates in us-east-1 with IAM permissions granted
+**Actual:** AccessDeniedException with "explicit deny in a service control policy" — new AWS accounts (via the "reimagined getting started" signup flow) are placed in an Organization with region-restriction SCPs. us-east-1 and us-west-2 only allow a narrow set of services (billing, IAM, Bedrock); most compute/database services are denied in those regions.
+**Severity:** High (blocked all AWS resource creation for ~1 hour)
+**Workaround:** Discovered ap-southeast-2 region has no such restriction in the applied SCP. Switched all resource creation (DynamoDB, Lambda, Cognito, EventBridge) to ap-southeast-2, kept Bedrock calls in us-east-1 (explicitly allowed there).
+**Suggested improvement:** AWS's new account signup flow should surface region/service restrictions more clearly before builders hit AccessDeniedException, especially since the default region shown in console (Stockholm) wasn't even one of the "allowed" regions in the SCP.
