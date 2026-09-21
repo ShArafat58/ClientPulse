@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>ClientPulse Briefing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: radial-gradient(circle at top left, #1a1f3d 0%, #0a0c14 60%);
+            color: #e8eaed;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        .card {
+            background: linear-gradient(180deg, #1a1d29 0%, #14161f 100%);
+            border-radius: 20px;
+            padding: 22px;
+            max-width: 420px;
+            margin: 0 auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(124, 158, 255, 0.08);
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #7c9eff, #a78bfa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: #0a0c14;
+        }
+
+        .header h1 {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            background: linear-gradient(90deg, #a9c1ff, #d7c8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header .today {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            color: #6b7280;
+            background: rgba(255, 255, 255, 0.04);
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .summary {
+            font-size: 14px;
+            color: #b8bcc4;
+            margin-bottom: 20px;
+            padding: 12px 14px;
+            background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(255, 107, 107, 0.02));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary .count {
+            font-size: 20px;
+            font-weight: 800;
+            color: #ff8080;
+        }
+
+        .client {
+            background: #1e212b;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.15s ease;
+        }
+
+        .client::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+        }
+
+        .client.needs_attention::before {
+            background: linear-gradient(180deg, #ff6b6b, #ff8e53);
+        }
+
+        .client.watch::before {
+            background: linear-gradient(180deg, #ffb84d, #ffd76a);
+        }
+
+        .client.healthy::before {
+            background: linear-gradient(180deg, #4dd67c, #6ee7a8);
+        }
+
+        .client-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0a0c14;
+            flex-shrink: 0;
+        }
+
+        .client.needs_attention .avatar {
+            background: linear-gradient(135deg, #ff8e8e, #ff8e53);
+        }
+
+        .client.watch .avatar {
+            background: linear-gradient(135deg, #ffd76a, #ffb84d);
+        }
+
+        .client.healthy .avatar {
+            background: linear-gradient(135deg, #7ef0a8, #4dd67c);
+        }
+
+        .client-name-wrap {
+            flex: 1;
+        }
+
+        .client-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .status-badge {
+            display: inline-block;
+            font-size: 9.5px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            padding: 2px 9px;
+            border-radius: 20px;
+            margin-top: 3px;
+        }
+
+        .status-badge.needs_attention {
+            background: rgba(255, 107, 107, 0.18);
+            color: #ff8e8e;
+        }
+
+        .status-badge.watch {
+            background: rgba(255, 184, 77, 0.18);
+            color: #ffd76a;
+        }
+
+        .status-badge.healthy {
+            background: rgba(77, 214, 124, 0.18);
+            color: #7ef0a8;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12.5px;
+            color: #8b8f99;
+            padding: 5px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .detail-row:first-of-type {
+            border-top: none;
+        }
+
+        .detail-row .value {
+            color: #e2e4e9;
+            font-weight: 600;
+        }
+
+        .action {
+            margin-top: 12px;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: #c3d3ff;
+            background: linear-gradient(135deg, rgba(124, 158, 255, 0.12), rgba(167, 139, 250, 0.06));
+            padding: 10px 12px;
+            border-radius: 10px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .action::before {
+            content: "→";
+            color: #7c9eff;
+            font-weight: 800;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card" id="card">
+        <div class="header">
+            <div class="brand">
+                <div class="brand-icon">CP</div>
+                <h1>CLIENTPULSE</h1>
+            </div>
+            <span class="today">TODAY</span>
+        </div>
+        <div class="summary">
+            <span class="count" id="attention-count">2</span>
+            <span id="summary-text">clients need your attention</span>
+        </div>
+        <div id="clients"></div>
+    </div>
+
+    <script>
+        const sampleData = {
+            needs_attention: 2,
+            clients: [
+                {
+                    name: "Acme Design",
+                    status: "needs_attention",
+                    days_silent: 14,
+                    invoice: "$1,250 overdue",
+                    next_meeting: "Tomorrow",
+                    action: "Confirm invoice status and revised proposal during tomorrow's call."
+                },
+                {
+                    name: "Northstar",
+                    status: "watch",
+                    days_silent: 9,
+                    invoice: null,
+                    next_meeting: null,
+                    action: null
+                }
+            ]
+        };
+
+        function initials(name) {
+            return name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase();
+        }
+
+        function render(data) {
+            document.getElementById("attention-count").textContent = data.needs_attention;
+            document.getElementById("summary-text").textContent =
+                `client${data.needs_attention === 1 ? "" : "s"} need your attention`;
+
+            const container = document.getElementById("clients");
+            container.innerHTML = "";
+
+            data.clients.forEach(c => {
+                const el = document.createElement("div");
+                el.className = `client ${c.status}`;
+                el.innerHTML = `
+        <div class="client-top">
+          <div class="avatar">${initials(c.name)}</div>
+          <div class="client-name-wrap">
+            <div class="client-name">${c.name}</div>
+            <span class="status-badge ${c.status}">${c.status.replace("_", " ")}</span>
+          </div>
+        </div>
+        <div class="detail-row"><span>Last contact</span><span class="value">${c.days_silent} days ago</span></div>
+        ${c.invoice ? `<div class="detail-row"><span>Invoice</span><span class="value">${c.invoice}</span></div>` : ""}
+        ${c.next_meeting ? `<div class="detail-row"><span>Next call</span><span class="value">${c.next_meeting}</span></div>` : ""}
+        ${c.action ? `<div class="action">${c.action}</div>` : ""}
+      `;
+                container.appendChild(el);
+            });
+        }
+
+        window.addEventListener("message", (event) => {
+            if (event.data && event.data.type === "clientpulse:briefing") {
+                render(event.data.payload);
+            }
+        });
+
+        render(sampleData);
+    </script>
+</body>
+
+</html>
