@@ -23,5 +23,19 @@ ClientPulse is a voice-first client-ops assistant for freelancers and small agen
 - Agent: AWS Strands SDK
 - Model: Amazon Bedrock (Nova Micro)
 
+## Data Sources — Hackathon Scope
+
+This build uses seeded demo data behind clean provider interfaces:
+
+- **CRM (GHL)**: `GHLProvider` interface with `DemoGHLProvider` implementation.
+  A real adapter (`RealGHLProvider`) can be added using the GHL REST API
+  without changing any calling code.
+- **Invoices**: `InvoiceProvider` interface with `DemoInvoiceProvider`.
+  Production adapters can connect to Stripe, QuickBooks, or GHL invoicing.
+
+This keeps the demo self-contained and reproducible for judges while
+showing the exact integration point for production use.
+
 ## License
 MIT
+
