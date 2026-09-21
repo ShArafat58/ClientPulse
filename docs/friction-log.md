@@ -49,3 +49,23 @@
 **Severity:** Low
 **Workaround:** Used `curl.exe` explicitly to invoke the real curl binary instead of the PowerShell alias
 **Suggested improvement:** N/A — Windows/PowerShell environment quirk, not an AWS issue
+
+## Entry 6
+
+**Date:** 2026-09-21
+**Task:** Invoke Bedrock Nova Micro model (via direct model ID and inference profile)
+**Expected:** Model responds after account verification completed
+**Actual:** ValidationException: "Operation not allowed" — a known account-level security restriction on new AWS accounts (confirmed via AWS re:Post), requiring an AWS Support case to resolve; not fixable via IAM/SCP changes
+**Severity:** High (blocks core AWS Builder mini-challenge requirement)
+**Workaround:** Opened AWS Support case (ID: 179000934700535), proceeding with non-Bedrock-dependent work (Lambda, Cognito, MCP visual card) while awaiting resolution
+**Suggested improvement:** AWS should surface this restriction proactively (e.g., in the Bedrock console) rather than only via a cryptic InvokeModel error after model access appears fully enabled
+
+## Entry 7
+
+**Date:** 2026-09-21
+**Task:** Package FastMCP server as a Lambda-ready Docker container using AWS Lambda Web Adapter
+**Expected:** public.ecr.aws/lambda/python base image + Web Adapter extension works together
+**Actual:** Lambda base image's built-in runtime client conflicts with the Web Adapter, causing "entrypoint requires the handler name to be the first argument" and empty responses on invocation
+**Severity:** Medium
+**Workaround:** Switched base image to plain public.ecr.aws/docker/library/python:3.12-slim, keeping only the Web Adapter extension layer — this is the correct pattern per AWS docs for web-app-style Lambda containers
+**Suggested improvement:** AWS's Lambda Web Adapter examples should more clearly warn against combining it with the Lambda base runtime images
