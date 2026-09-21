@@ -5,7 +5,8 @@ Entry point for the FastMCP server exposing ClientPulse tools to Alexa+.
 MCP spec: 2025-11-25+
 Transport: Streamable HTTP
 """
-
+from dotenv import load_dotenv
+load_dotenv()
 from fastmcp import FastMCP
 
 from src.tools.daily_briefing import get_daily_briefing as _get_daily_briefing

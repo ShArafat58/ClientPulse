@@ -79,3 +79,14 @@
 **Severity:** High (blocks Lambda deployment, likely same root cause as Bedrock restriction)
 **Workaround:** Added details to existing AWS Support case (ID: 179000934700535); proceeding with local development and code that doesn't require live Lambda while awaiting support response
 **Suggested improvement:** AWS should provide clearer, more specific error messages for account-level restrictions rather than a generic "None" message that looks identical to a permissions misconfiguration
+
+
+## Entry 9
+
+**Date:** 2026-09-21
+**Task:** Debug UnrecognizedClientException on prep_call tool call
+**Expected:** Tool reads from local DynamoDB Local as configured
+**Actual:** A leftover Docker container (from earlier Lambda container testing) was still running on port 8000 with real-but-invalid AWS credentials, silently intercepting all MCP Inspector requests instead of the local dev server
+**Severity:** Medium (confusing debugging session, ~20 min lost)
+**Workaround:** `docker ps` revealed the stale container; stopped it, local server on the same port took over correctly. Also added missing `load_dotenv()` call to src/server.py, which had never actually been loading .env values.
+**Suggested improvement:** Always check `docker ps` for port conflicts before debugging application-level env/credential issues
