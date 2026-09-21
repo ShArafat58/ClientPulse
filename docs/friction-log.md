@@ -29,3 +29,23 @@
 **Severity:** High (blocked all AWS resource creation for ~1 hour)
 **Workaround:** Discovered ap-southeast-2 region has no such restriction in the applied SCP. Switched all resource creation (DynamoDB, Lambda, Cognito, EventBridge) to ap-southeast-2, kept Bedrock calls in us-east-1 (explicitly allowed there).
 **Suggested improvement:** AWS's new account signup flow should surface region/service restrictions more clearly before builders hit AccessDeniedException, especially since the default region shown in console (Stockholm) wasn't even one of the "allowed" regions in the SCP.
+
+## Entry 4
+
+**Date:** 2026-09-21
+**Task:** Invoke Amazon Bedrock Nova Micro model for the first time
+**Expected:** Model responds immediately (page said models are auto-enabled)
+**Actual:** AccessDeniedException — "Your account is currently being verified... normally takes less than 2 hours"
+**Severity:** Medium (blocks Bedrock/Strands work temporarily, not permanently)
+**Workaround:** Proceeding with non-Bedrock-dependent tasks (Cognito, MCP visual card) while waiting for verification
+**Suggested improvement:** The "Model access page has been retired" messaging implies instant access, but doesn't mention the account verification step new accounts go through — this caused confusion
+
+## Entry 5
+
+**Date:** 2026-09-21
+**Task:** Test Cognito OAuth client_credentials token endpoint
+**Expected:** curl works directly
+**Actual:** PowerShell's `curl` alias (Invoke-WebRequest) doesn't support -X/-d flags like real curl
+**Severity:** Low
+**Workaround:** Used `curl.exe` explicitly to invoke the real curl binary instead of the PowerShell alias
+**Suggested improvement:** N/A — Windows/PowerShell environment quirk, not an AWS issue
