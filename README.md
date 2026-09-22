@@ -91,6 +91,45 @@ development — the real Bedrock call is a single environment variable away.
 | `list_stale_clients()` | Clients with no meaningful contact in 7+ days |
 | `record_client_note(client_id, note)` | Persist a note/commitment, remembered in future `prep_call` calls |
 
+## Repo Structure
+
+```
+clientpulse-mcp/
+├── LICENSE
+├── README.md
+├── requirements.txt
+├── Dockerfile
+├── .env.example
+├── src/
+│   ├── server.py              # FastMCP entrypoint, registers all 5 tools
+│   ├── tools/                 # One file per MCP tool
+│   ├── integrations/
+│   │   ├── ghl.py             # CRM provider interface + demo data
+│   │   └── invoices/          # Invoice provider interface + demo data
+│   ├── storage/
+│   │   ├── store.py           # Backend switcher (local/dynamodb)
+│   │   ├── local_json.py      # Local JSON storage (default)
+│   │   └── dynamodb.py        # AWS DynamoDB storage
+│   ├── scoring/
+│   │   └── relationship.py    # Rules-based relationship scoring
+│   ├── agent/
+│   │   ├── client_intelligence.py  # Strands + Bedrock orchestration
+│   │   ├── mock_model.py      # Offline-dev mock for the AI layer
+│   │   └── prompts.py
+│   └── models/
+├── workers/
+│   └── sync_and_analyze.py    # EventBridge-ready background sync
+├── apps/
+│   └── briefing/
+│       └── app.html           # MCP App visual card
+├── tests/                     # pytest suite, 15 tests
+└── docs/
+    ├── architecture.md
+    ├── demo-script.md
+    ├── product-feedback.md
+    └── friction-log.md
+```
+
 ## Data Sources — Hackathon Scope
 This build uses seeded demo data behind clean provider interfaces:
 
