@@ -1,0 +1,111 @@
+{
+  "CLIENT#acme|HEALTH": {
+    "PK": "CLIENT#acme",
+    "SK": "HEALTH",
+    "days_silent": 14,
+    "invoice_overdue": true,
+    "relationship_score": 8,
+    "status": "needs_attention",
+    "updated_at": "2026-09-22T21:54:39.176016+00:00"
+  },
+  "CLIENT#acme|INSIGHT#LATEST": {
+    "PK": "CLIENT#acme",
+    "SK": "INSIGHT#LATEST",
+    "priority": "high",
+    "reasons": [
+      "No communication for 14 days",
+      "Invoice is overdue"
+    ],
+    "recommended_action": "Confirm the invoice status and any open items during the upcoming call."
+  },
+  "CLIENT#northstar|HEALTH": {
+    "PK": "CLIENT#northstar",
+    "SK": "HEALTH",
+    "days_silent": 9,
+    "invoice_overdue": false,
+    "relationship_score": 1,
+    "status": "watch",
+    "updated_at": "2026-09-22T21:54:39.185504+00:00"
+  },
+  "CLIENT#northstar|INSIGHT#LATEST": {
+    "PK": "CLIENT#northstar",
+    "SK": "INSIGHT#LATEST",
+    "priority": "medium",
+    "reasons": [
+      "Contact has gone quiet for 9 days"
+    ],
+    "recommended_action": "No action needed right now \u2014 relationship is healthy."
+  },
+  "CLIENT#brightlabs|HEALTH": {
+    "PK": "CLIENT#brightlabs",
+    "SK": "HEALTH",
+    "days_silent": 1,
+    "invoice_overdue": false,
+    "relationship_score": 1,
+    "status": "watch",
+    "updated_at": "2026-09-22T21:54:39.204018+00:00"
+  },
+  "CLIENT#brightlabs|INSIGHT#LATEST": {
+    "PK": "CLIENT#brightlabs",
+    "SK": "INSIGHT#LATEST",
+    "priority": "medium",
+    "reasons": [
+      "Meeting scheduled within 24 hours"
+    ],
+    "recommended_action": "No action needed right now \u2014 relationship is healthy."
+  },
+  "CLIENT#pixelworks|HEALTH": {
+    "PK": "CLIENT#pixelworks",
+    "SK": "HEALTH",
+    "days_silent": 2,
+    "invoice_overdue": false,
+    "relationship_score": 0,
+    "status": "healthy",
+    "updated_at": "2026-09-22T21:54:39.214022+00:00"
+  },
+  "CLIENT#pixelworks|INSIGHT#LATEST": {
+    "PK": "CLIENT#pixelworks",
+    "SK": "INSIGHT#LATEST",
+    "priority": "low",
+    "reasons": [
+      "No urgent signals detected"
+    ],
+    "recommended_action": "No action needed right now \u2014 relationship is healthy."
+  },
+  "CLIENT#atlas|HEALTH": {
+    "PK": "CLIENT#atlas",
+    "SK": "HEALTH",
+    "days_silent": 5,
+    "invoice_overdue": false,
+    "relationship_score": 2,
+    "status": "watch",
+    "updated_at": "2026-09-22T21:54:39.223018+00:00"
+  },
+  "CLIENT#atlas|INSIGHT#LATEST": {
+    "PK": "CLIENT#atlas",
+    "SK": "INSIGHT#LATEST",
+    "priority": "medium",
+    "reasons": [
+      "Open commitment: Share updated timeline"
+    ],
+    "recommended_action": "Follow up on: Share updated timeline"
+  },
+  "USER#demo|BRIEFING#2026-09-22": {
+    "PK": "USER#demo",
+    "SK": "BRIEFING#2026-09-22",
+    "needs_attention": 1,
+    "overdue_invoices": 1,
+    "upcoming_calls": 2,
+    "top_client": "Acme Design"
+  },
+  "CLIENT#acme|NOTE#2026-09-22T21:54:38.986183+00:00": {
+    "PK": "CLIENT#acme",
+    "SK": "NOTE#2026-09-22T21:54:38.986183+00:00",
+    "note": "Send revised proposal Friday"
+  },
+  "CLIENT#acme|NOTE#2026-09-22T21:54:39.002606+00:00": {
+    "PK": "CLIENT#acme",
+    "SK": "NOTE#2026-09-22T21:54:39.002606+00:00",
+    "note": "Follow up next week"
+  }
+}

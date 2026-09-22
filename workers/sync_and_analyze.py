@@ -14,7 +14,7 @@ from src.integrations.ghl import get_ghl_provider
 from src.integrations.invoices.demo import get_invoice_provider
 from src.scoring.relationship import calculate_relationship_score
 from src.agent.client_intelligence import generate_client_insight
-from src.storage.dynamodb import (
+from src.storage.store import (
     save_client_health,
     save_insight,
     save_daily_briefing_cache,

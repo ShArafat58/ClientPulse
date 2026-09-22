@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from src.integrations.ghl import get_ghl_provider
 from src.integrations.invoices.demo import get_invoice_provider
 from src.scoring.relationship import calculate_relationship_score
-from src.storage.dynamodb import get_client_notes, get_latest_insight, save_insight
+from src.storage.store import get_client_notes, get_latest_insight, save_insight
 from src.agent.client_intelligence import generate_client_insight
 
 

@@ -20,14 +20,14 @@ the one next action a freelancer needs to take, voice-first, through Alexa+.
 - **Persistent memory** — remembers commitments and notes across sessions
 
 ## Architecture
-                BACKGROUND (precomputed, not on the voice request path)
+            BACKGROUND (precomputed, not on the voice request path)
 
 GHL + Invoice data → Rules-based relationship scoring → Strands Agent
-→ Amazon Bedrock (Nova Micro) → Client insight → DynamoDB (cached)
+→ Amazon Bedrock (Nova Micro) → Client insight → Storage (cached)
 
-                RUNTIME (fast path, <500ms target for Alexa+)
+            RUNTIME (fast path, <500ms target for Alexa+)
 
-Alexa+ → FastMCP (Streamable HTTP) → DynamoDB read → Structured response
+Alexa+ → FastMCP (Streamable HTTP) → Storage read → Structured response
 → Alexa+ voice response + MCP App visual card
 
 
@@ -60,8 +60,9 @@ def prep_call(client_id: str) -> dict:
   prioritizes.
 - **AWS Strands Agents SDK** — orchestrates the client-intelligence pipeline
   (`src/agent/client_intelligence.py`)
-- **Amazon DynamoDB** — persistent client memory (health scores, notes,
-  cached insights, daily briefings), single-table design
+- **Amazon DynamoDB** — persistent client memory backend for production
+  deployment (single-table design), swappable with local storage for
+  fully offline development and demo (see Storage Backend below)
 - **AWS Lambda** — MCP server hosting, container-based deployment with
   AWS Lambda Web Adapter for Streamable HTTP support
 - **Amazon Cognito** — OAuth 2.1 (client_credentials grant) for MCP
@@ -76,7 +77,9 @@ AI reasoning:
   explanation and one concrete recommended action
 
 This keeps cost and latency low, avoids hallucinated priority scores, and
-keeps every recommendation explainable and auditable.
+keeps every recommendation explainable and auditable. A mock model
+(`src/agent/mock_model.py`) mirrors this exact contract for offline
+development — the real Bedrock call is a single environment variable away.
 
 ## MCP Tools
 
@@ -100,6 +103,21 @@ This build uses seeded demo data behind clean provider interfaces:
 This keeps the demo self-contained and reproducible for judges while making
 the production integration point explicit.
 
+## Storage Backend
+
+ClientPulse supports two interchangeable storage backends via the
+`STORAGE_BACKEND` environment variable:
+
+- **`local`** (default) — JSON file storage (`data/local_store.json`).
+  Zero external dependencies; the entire product runs and demos with no
+  AWS account required.
+- **`dynamodb`** — Amazon DynamoDB, single-table design, for production
+  or AWS-hosted deployment.
+
+Both backends implement identical function signatures
+(`src/storage/store.py` is the switcher), so calling code — every MCP
+tool and the background worker — never needs to know which is active.
+
 ## Setup (Local Development)
 
 ```bash
@@ -109,16 +127,19 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Start local DynamoDB (Docker):
+By default (`STORAGE_BACKEND=local`), no further setup is needed — run the
+server directly:
+
+```bash
+python -m src.server
+```
+
+**Optional — using DynamoDB instead of local storage:**
 ```bash
 docker run -d -p 8001:8000 --name clientpulse-dynamodb amazon/dynamodb-local
 python scripts/create_table.py
 ```
-
-Run the MCP server:
-```bash
-python -m src.server
-```
+Then set `STORAGE_BACKEND=dynamodb` in `.env`.
 
 Verify with [MCP Inspector](https://github.com/modelcontextprotocol/inspector):
 ```bash
@@ -136,7 +157,8 @@ docker tag clientpulse-mcp:latest <ecr-repo-uri>:latest
 docker push <ecr-repo-uri>:latest
 aws lambda create-function --function-name clientpulse-mcp \
   --package-type Image --code ImageUri=<ecr-repo-uri>:latest \
-  --role <lambda-execution-role-arn> --timeout 30 --memory-size 512
+  --role <lambda-execution-role-arn> --timeout 30 --memory-size 512 \
+  --environment "Variables={STORAGE_BACKEND=dynamodb,USE_MOCK_BEDROCK=false}"
 ```
 
 ## Testing
@@ -145,11 +167,13 @@ pytest tests/ -v
 ```
 
 ## Cost Design
-Built to stay within AWS Free Tier / Free Plan credits:
+Built to stay within AWS Free Tier / Free Plan credits when deployed on AWS:
 - DynamoDB: pay-per-request, always-free tier covers demo-scale usage
 - Lambda: well within the 1M free requests/month allowance
 - Bedrock: capped at `MAX_BEDROCK_CALLS_PER_SYNC=20` per background sync
 - No NAT Gateway, no provisioned concurrency, no always-on compute
+- The local storage backend means the full product can also be built,
+  tested, and demoed with $0 cloud spend
 
 ## Privacy & Security
 - OAuth 2.1 (client_credentials grant) via Amazon Cognito for service-level
@@ -160,7 +184,8 @@ Built to stay within AWS Free Tier / Free Plan credits:
 ## Hackathon Scope
 Built during the Amazon Developer Hackathon 2026 (Sept–Oct 2026) as a solo
 entry. See `docs/friction-log.md` for a full log of issues encountered and
-worked around during development.
+worked around during development, including new-AWS-account access
+restrictions that motivated the swappable storage/model design.
 
 ## Product Feedback
 See `docs/product-feedback.md`.
